@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050D18">
+<title>98A Hoechlegasse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@500;600;700&display=swap">
+<style>
+/* Layout: eine schmale Spalte, große Abfahrt oben, danach die nächsten Abfahrten. Dunkel zuerst, hell über Systemeinstellung. */
+:root {
+  --bg: #050D18;
+  --glow: rgba(14, 116, 144, 0.28);
+  --panel: #0A1827;
+  --panel2: #0E2236;
+  --line: #14405E;
+  --line-strong: #1F6F94;
+  --text: #D8EEFB;
+  --muted: #7FA6C0;
+  --accent: #22D3EE;
+  --onaccent: #04141C;
+  --ok: #34D399;
+  --warn: #FBBF24;
+  --bad: #F87171;
+  --f-display: 'Orbitron', 'Segoe UI', system-ui, sans-serif;
+  --f-body: 'Rajdhani', 'Segoe UI', system-ui, sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #E6EFF6; --glow: rgba(14, 116, 144, 0.14); --panel: #FFFFFF; --panel2: #EEF5FA;
+    --line: #BCD0DF; --line-strong: #5B8FAB; --text: #0D2234; --muted: #4A6980; --accent: #0A7C93;
+    --onaccent: #FFFFFF; --ok: #0E8A5F; --warn: #9A5B05; --bad: #B42318; color-scheme: light;
+  }
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: radial-gradient(700px 360px at 50% -6%, var(--glow), transparent 70%);
+  background-repeat: no-repeat;
+  color: var(--text);
+  font-family: var(--f-body);
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.35;
+  min-height: 100vh;
+  padding-top: max(18px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+header { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
+.badge { font: 800 20px/1 var(--f-display); letter-spacing: 0.06em; padding: 9px 13px; border-radius: 8px; background: var(--accent); color: var(--onaccent); }
+.where { min-width: 0; }
+.where b { display: block; font-weight: 700; font-size: 20px; letter-spacing: 0.02em; }
+.where span { color: var(--muted); font-size: 15px; }
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.next { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.big { font: 800 clamp(44px, 14vw, 68px)/1 var(--f-display); color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.big small { font: 600 14px var(--f-display); letter-spacing: 0.14em; color: var(--muted); margin-left: 8px; }
+.meta { text-align: right; display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+.meta .t { font: 600 22px var(--f-display); font-variant-numeric: tabular-nums; }
+.meta .p { color: var(--muted); font-size: 15px; }
+
+.pill { font: 600 11px var(--f-display); letter-spacing: 0.1em; padding: 4px 9px; border-radius: 999px; border: 1px solid currentColor; text-transform: uppercase; white-space: nowrap; }
+.pill.ok { color: var(--ok); } .pill.warn { color: var(--warn); } .pill.mute { color: var(--muted); }
+
+ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.row { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; }
+.row .cd { font: 600 20px/1.1 var(--f-display); font-variant-numeric: tabular-nums; color: var(--accent); white-space: nowrap; }
+.row .cd small { font: 600 10px var(--f-display); letter-spacing: 0.1em; color: var(--muted); margin-left: 4px; }
+.row .nm { font-weight: 700; }
+.row .dt { color: var(--muted); font-size: 14px; }
+
+.empty { color: var(--muted); }
+.bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; color: var(--muted); font-size: 15px; }
+.bar .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); margin-right: 8px; }
+.bar[data-s="ok"] .dot { background: var(--ok); }
+.bar[data-s="bad"] .dot { background: var(--bad); }
+button { min-height: 44px; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: 8px; background: transparent; color: var(--text); font: 600 15px var(--f-body); letter-spacing: 0.04em; cursor: pointer; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button[disabled] { opacity: 0.6; cursor: default; }
+.err { border: 1px solid var(--bad); border-radius: 10px; padding: 12px 14px; background: var(--panel); }
+.err p { margin: 0 0 6px; }
+.err p:last-child { margin: 0; color: var(--muted); font-size: 15px; }
+a { color: var(--accent); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="badge">98A</span>
+    <div class="where"><b>Hoechlegasse</b><span>Richtung Aspernstraße U</span></div>
+  </header>
+
+  <section class="card" aria-label="Nächste Abfahrt">
+    <div class="next" id="next"><span class="empty">Lädt …</span></div>
+  </section>
+
+  <section aria-label="Weitere Abfahrten"><ul id="more"></ul></section>
+
+  <div class="err" id="err" role="alert" hidden>
+    <p id="err-t"></p>
+    <p>Die Rohdaten kannst du hier prüfen: <a href="https://www.wienerlinien.at/ogd_realtime/monitor?rbl=8680" target="_blank" rel="noopener noreferrer">Wiener Linien, Haltestelle 8680</a></p>
+  </div>
+
+  <div class="bar" id="bar" data-s="">
+    <span role="status" aria-live="polite"><i class="dot"></i><span id="stamp">Noch nicht geladen</span></span>
+    <button type="button" id="reload">Jetzt aktualisieren</button>
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  /* Adresse deines Cloudflare Workers, zum Beispiel https://oeffi.dein-name.workers.dev */
+  var URL_API = 'WORKER_URL_HIER';
+  var LINE = '98A', TZ = 'Europe/Vienna', EVERY = 30000;
+  var tf = new Intl.DateTimeFormat('de-AT', { hour: '2-digit', minute: '2-digit', timeZone: TZ });
+  var tfs = new Intl.DateTimeFormat('de-AT', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: TZ });
+  var state = { deps: [], at: 0, err: null };
+  var busy = false, timer = 0;
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  /* "+0100" ohne Doppelpunkt versteht nicht jeder Browser, Safari zum Beispiel nicht */
+  function parseTime(s) { return Date.parse(String(s || '').replace(/([+-]\d{2})(\d{2})$/, '$1:$2')); }
+
+  function collect(json) {
+    var out = [];
+    ((json && json.data && json.data.monitors) || []).forEach(function (m) {
+      (m.lines || []).forEach(function (l) {
+        if (l.name !== LINE) return;
+        ((l.departures && l.departures.departure) || []).forEach(function (d) {
+          var t = d.departureTime || {}, p = parseTime(t.timePlanned), r = parseTime(t.timeReal || t.timePlanned);
+          if (isFinite(r)) out.push({ p: isFinite(p) ? p : r, r: r });
+        });
+      });
+    });
+    out.sort(function (a, b) { return a.r - b.r; });
+    return out;
+  }
+
+  async function load() {
+    if (busy) return;
+    if (URL_API.indexOf('https://') !== 0) { state.err = 'Die Adresse des Workers ist noch nicht in der Seite eingetragen.'; render(); return; }
+    busy = true; $('reload').disabled = true;
+    var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 10000);
+    try {
+      var r = await fetch(URL_API, { cache: 'no-store', signal: ctl.signal });
+      if (!r.ok) throw { kind: 'http', status: r.status };
+      state = { deps: collect(await r.json()), at: Date.now(), err: null };
+    } catch (e) {
+      state.err = e && e.kind === 'http' ? 'Die Wiener Linien antworten mit Fehler ' + e.status + '.'
+        : (e && e.name === 'AbortError' ? 'Die Wiener Linien antworten nicht rechtzeitig.'
+        : 'Der Abruf ist fehlgeschlagen. Du bist offline oder der Worker ist nicht erreichbar.');
+    } finally {
+      clearTimeout(to); busy = false; $('reload').disabled = false;
+    }
+    render();
+  }
+
+  function delayInfo(d) {
+    var late = Math.round((d.r - d.p) / 60000);
+    return late >= 2 ? { cls: 'warn', txt: '+' + late + ' Min' } : { cls: 'ok', txt: 'pünktlich' };
+  }
+  function countdown(d, now) { return Math.max(0, Math.floor((d.r - now) / 60000)); }
+
+  function render() {
+    var now = Date.now();
+    var up = state.deps.filter(function (d) { return d.r > now - 30000; });
+    var next = $('next'), more = $('more');
+    next.textContent = ''; more.textContent = '';
+
+    if (!state.at) {
+      next.appendChild(el('span', 'empty', state.err ? 'Keine Daten geladen.' : 'Lädt …'));
+    } else if (!up.length) {
+      next.appendChild(el('span', 'empty', 'Keine Abfahrten in den nächsten Minuten gemeldet.'));
+    } else {
+      var d = up[0], m = countdown(d, now), di = delayInfo(d);
+      var big = el('div', 'big', m < 1 ? 'jetzt' : String(m));
+      if (m >= 1) big.appendChild(el('small', '', 'MIN'));
+      next.appendChild(big);
+      var meta = el('div', 'meta');
+      meta.appendChild(el('span', 't', tf.format(new Date(d.r))));
+      meta.appendChild(el('span', 'pill ' + di.cls, di.txt));
+      if (di.cls === 'warn') meta.appendChild(el('span', 'p', 'geplant ' + tf.format(new Date(d.p))));
+      next.appendChild(meta);
+      up.slice(1, 5).forEach(function (x) {
+        var li = el('li', 'row'), mm = countdown(x, now), xi = delayInfo(x);
+        var cd = el('span', 'cd', mm < 1 ? 'jetzt' : String(mm));
+        if (mm >= 1) cd.appendChild(el('small', '', 'MIN'));
+        li.appendChild(cd);
+        var mid = el('div');
+        mid.appendChild(el('div', 'nm', 'Abfahrt ' + tf.format(new Date(x.r))));
+        mid.appendChild(el('div', 'dt', xi.cls === 'warn' ? 'geplant ' + tf.format(new Date(x.p)) : 'laut Fahrplan'));
+        li.appendChild(mid);
+        li.appendChild(el('span', 'pill ' + xi.cls, xi.txt));
+        more.appendChild(li);
+      });
+    }
+
+    var err = $('err'), bar = $('bar');
+    err.hidden = !state.err;
+    if (state.err) setText('err-t', state.err);
+    bar.setAttribute('data-s', state.err ? 'bad' : (state.at ? 'ok' : ''));
+    if (state.at) {
+      var age = Math.round((now - state.at) / 1000);
+      setText('stamp', (state.err ? 'Letzter Abruf ' : 'Aktualisiert ') + tfs.format(new Date(state.at)) + ' Uhr' + (state.err && age > 60 ? ' (vor ' + Math.round(age / 60) + ' Min)' : ''));
+    } else setText('stamp', state.err ? 'Kein Abruf möglich' : 'Noch nicht geladen');
+  }
+  function setText(id, v) { $(id).textContent = v; }
+
+  function start() {
+    clearInterval(timer);
+    timer = setInterval(function () { if (!document.hidden) load(); }, EVERY);
+  }
+  $('reload').addEventListener('click', load);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) { load(); start(); } });
+  setInterval(render, 1000);
+  render(); load(); start();
+})();
+</script>
+</body>
+</html>
