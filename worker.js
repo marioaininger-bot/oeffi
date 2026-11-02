@@ -3,7 +3,7 @@
 // Die Haltestelle ist fest eingetragen, der Worker lässt sich also nicht als offener Weiterleiter für andere Abfragen nutzen.
 
 const UPSTREAM = 'https://www.wienerlinien.at/ogd_realtime/monitor?rbl=8680';
-const ALLOWED_ORIGINS = ['https://marioaininger-bot.github.io'];
+const ALLOWED_ORIGINS = ['https://marioaininger-bot.github.io', 'https://ainiger.com', 'https://www.ainiger.com'];
 
 export default {
   async fetch(request) {
