@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="de" data-mode="tafel">
+<html lang="de" data-mode="hell">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0A0805">
+<meta name="theme-color" content="#F4F1EC">
 <title>98A Hoechlegasse</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@500&display=swap">
 <style>
-/* Layout: eine schmale Spalte. Oben der Umschalter, dann die gewählte Ansicht (Tafel oder Modern), unten Status und Aktualisieren.
+/* Layout: eine schmale Spalte. Oben der Umschalter, dann die gewählte Ansicht (Hell, Tafel oder Modern), unten Status und Aktualisieren.
    Beide Ansichten werden aus denselben Daten gefüllt, html[data-mode] entscheidet, welche sichtbar ist. */
 :root {
   --f-dot: 'Doto', 'DM Mono', ui-monospace, monospace;
@@ -124,6 +124,48 @@ html[data-mode="modern"] .bar[data-s="ok"] .dot { background: var(--m-ok); }
 html[data-mode="modern"] .bar[data-s="bad"] .dot { background: var(--m-bad); }
 html[data-mode="modern"] .bar button { border: 1px solid var(--m-accent); border-radius: 999px; color: var(--m-accent); font: 600 14px var(--f-body); letter-spacing: .02em; text-transform: none; }
 
+/* ===== Ansicht Hell ===== */
+html[data-mode="hell"] { background: #F4F1EC; color-scheme: light; }
+html[data-mode="hell"] body { background-color: #F4F1EC; color: #16181B; font-family: 'Barlow', system-ui, sans-serif; font-weight: 500; }
+html[data-mode="hell"] .top-l { font: 600 15px 'Barlow', system-ui, sans-serif; letter-spacing: .02em; color: #5B5F66; }
+html[data-mode="hell"] .seg { border: 1px solid #D9D4CB; border-radius: 8px; padding: 3px; gap: 2px; background: #fff; }
+html[data-mode="hell"] .seg button { font: 600 13px 'Barlow', system-ui, sans-serif; letter-spacing: .04em; color: #5B5F66; border-radius: 6px; min-height: 34px; }
+html[data-mode="hell"] .seg button[aria-pressed="true"] { background: #E2001A; color: #fff; }
+.h-wrap { border: 1px solid #D9D4CB; border-radius: 10px; overflow: hidden; background: #FBF9F5; }
+.h-band { background: #E2001A; color: #fff; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+.h-bus { background: #fff; color: #E2001A; font: 700 30px/1 var(--f-num); padding: 6px 10px; border-radius: 4px; letter-spacing: .03em; }
+.h-band b { display: block; font-size: 19px; font-weight: 700; line-height: 1.1; }
+.h-band span.s { font-size: 13px; opacity: .9; }
+.h-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+.h-first { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: end; padding-bottom: 12px; border-bottom: 3px solid #16181B; }
+.h-first .num { font: 700 clamp(88px, 30vw, 128px)/.82 var(--f-num); }
+.h-first .num.now { font-size: clamp(54px, 18vw, 76px); line-height: .9; }
+.h-first .u { font: 600 24px/1 var(--f-num); letter-spacing: .06em; text-transform: uppercase; padding-bottom: 6px; }
+.h-first .u small { display: block; font: 500 15px 'Barlow', system-ui, sans-serif; letter-spacing: 0; text-transform: none; color: #5B5F66; margin-top: 4px; }
+.h-ok { color: #0E7A4F; font-weight: 700; }
+.h-warn { color: #B26A00; font-weight: 700; }
+.h-empty { color: #5B5F66; padding: 6px 0; }
+.h-rows { display: flex; flex-direction: column; }
+.h-r { display: grid; grid-template-columns: 70px 1fr auto; align-items: baseline; gap: 8px; padding: 7px 0; border-bottom: 1px solid #D9D4CB; }
+.h-r:last-child { border-bottom: 0; }
+.h-r b { font: 700 34px/1 var(--f-num); }
+.h-r b small { font: 600 12px var(--f-num); letter-spacing: .08em; color: #5B5F66; margin-left: 3px; }
+.h-r .t { font-size: 16px; }
+.h-r .st { font-size: 13px; font-weight: 700; color: #0E7A4F; }
+.h-r.l .st { color: #B26A00; }
+.h-axis { position: relative; height: 24px; margin: 4px 8px 0; }
+.h-axis .ln { position: absolute; left: 0; right: 0; top: 10px; height: 3px; background: #D4CEC3; border-radius: 2px; }
+.h-axis i { position: absolute; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: #E2001A; border: 3px solid #FBF9F5; transform: translateX(-50%); }
+.h-axis i.l { background: #E8A100; }
+.h-axis i.f { width: 18px; height: 18px; top: 2px; }
+.h-scale { display: flex; justify-content: space-between; font: 500 10.5px 'Barlow', system-ui, sans-serif; color: #8A8A8A; margin: 0 8px; letter-spacing: .05em; }
+html[data-mode="hell"] .err { background: #fff; border: 1px solid #B42318; border-radius: 8px; }
+html[data-mode="hell"] .bar { color: #5B5F66; font: 500 13px 'Barlow', system-ui, sans-serif; letter-spacing: 0; }
+html[data-mode="hell"] .bar .dot { background: #5B5F66; }
+html[data-mode="hell"] .bar[data-s="ok"] .dot { background: #0E7A4F; }
+html[data-mode="hell"] .bar[data-s="bad"] .dot { background: #B42318; }
+html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: #16181B; color: #fff; font: 600 14px 'Barlow', system-ui, sans-serif; letter-spacing: .04em; text-transform: none; }
+
 @media (prefers-reduced-motion: reduce) { .ringbox circle.fill { transition: none; } }
 </style>
 </head>
@@ -132,13 +174,14 @@ html[data-mode="modern"] .bar button { border: 1px solid var(--m-accent); border
   <div class="top">
     <span class="top-l tn" id="top-l"></span>
     <div class="seg" role="group" aria-label="Ansicht">
-      <button type="button" data-mode="tafel" aria-pressed="true">Tafel</button>
+      <button type="button" data-mode="tafel" aria-pressed="false">Tafel</button>
       <button type="button" data-mode="modern" aria-pressed="false">Modern</button>
+      <button type="button" data-mode="hell" aria-pressed="true">Hell</button>
     </div>
   </div>
 
   <!-- Ansicht Tafel -->
-  <section id="v-tafel" aria-label="Abfahrten, Tafel-Ansicht">
+  <section id="v-tafel" aria-label="Abfahrten, Tafel-Ansicht" hidden>
     <div class="hd-t"><b>98A</b><span>Hoechlegasse<br>&gt; Aspernstraße U</span></div>
     <div class="t-list tn" id="t-list"><div class="t-empty">Lädt …</div></div>
   </section>
@@ -158,6 +201,21 @@ html[data-mode="modern"] .bar button { border: 1px solid var(--m-accent); border
       <div id="m-timeline" hidden>
         <div class="axis tn" id="m-axis"><div class="ln"></div></div>
         <div class="scale"><span>JETZT</span><span>30 MIN</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ansicht Hell -->
+  <section id="v-hell" aria-label="Abfahrten, helle Ansicht">
+    <div class="h-wrap">
+      <div class="h-band"><span class="h-bus">98A</span><div><b>Hoechlegasse</b><span class="s">Richtung Aspernstraße U</span></div></div>
+      <div class="h-body">
+        <div class="h-first tn" id="h-first"><div class="h-empty">Lädt …</div></div>
+        <div class="h-rows tn" id="h-rows"></div>
+        <div id="h-timeline" hidden>
+          <div class="h-axis" id="h-axis" aria-hidden="true"><div class="ln"></div></div>
+          <div class="h-scale"><span>JETZT</span><span>30 MIN</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -183,7 +241,7 @@ html[data-mode="modern"] .bar button { border: 1px solid var(--m-accent); border
   var tf = new Intl.DateTimeFormat('de-AT', { hour: '2-digit', minute: '2-digit', timeZone: TZ });
   var tfs = new Intl.DateTimeFormat('de-AT', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: TZ });
   var state = { deps: [], at: 0, err: null };
-  var busy = false, timer = 0, mode = 'tafel';
+  var busy = false, timer = 0, mode = 'hell';
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
@@ -281,15 +339,55 @@ html[data-mode="modern"] .bar button { border: 1px solid var(--m-accent); border
     tl.hidden = !any;
   }
 
+  /* ---- Ansicht Hell ---- */
+  function renderHell(up, now) {
+    var first = $('h-first'), rows = $('h-rows'), tl = $('h-timeline'), axis = $('h-axis');
+    first.textContent = ''; rows.textContent = '';
+    while (axis.children.length > 1) axis.removeChild(axis.lastChild);
+    if (!state.at || !up.length) {
+      tl.hidden = true;
+      first.appendChild(el('div', 'h-empty', !state.at ? (state.err ? 'Keine Daten geladen.' : 'Lädt …') : 'Keine Abfahrten in den nächsten Minuten gemeldet.'));
+      return;
+    }
+    var d = up[0], m = countdown(d, now), late = isLate(d);
+    first.appendChild(el('div', 'num' + (m < 1 ? ' now' : ''), m < 1 ? 'jetzt' : String(m)));
+    var u = el('div', 'u', m < 1 ? '' : (m === 1 ? 'Minute' : 'Minuten'));
+    var sm = el('small', '', tf.format(new Date(d.r)) + ' Uhr · ');
+    sm.appendChild(el('span', late ? 'h-warn' : 'h-ok', late ? '+' + delayMin(d) + ' Min' : 'pünktlich'));
+    u.appendChild(sm);
+    first.appendChild(u);
+    up.slice(1, SHOW).forEach(function (x) {
+      var mm = countdown(x, now), lt = isLate(x);
+      var r = el('div', 'h-r' + (lt ? ' l' : ''));
+      var b = el('b', '', mm < 1 ? 'jetzt' : String(mm));
+      if (mm >= 1) b.appendChild(el('small', '', 'MIN'));
+      r.appendChild(b);
+      r.appendChild(el('span', 't', tf.format(new Date(x.r)) + ' Uhr'));
+      r.appendChild(el('span', 'st', lt ? '+' + delayMin(x) + ' Min' : 'pünktlich'));
+      rows.appendChild(r);
+    });
+    var any = false;
+    up.slice(0, SHOW).forEach(function (x, i) {
+      var mm = countdown(x, now);
+      if (mm > AXIS_MIN) return;
+      any = true;
+      var dot = el('i', (i === 0 ? 'f' : '') + (isLate(x) ? ' l' : ''));
+      dot.style.left = Math.max(4, Math.min(96, mm / AXIS_MIN * 100)) + '%';
+      axis.appendChild(dot);
+    });
+    tl.hidden = !any;
+  }
+
   function render() {
     var now = Date.now();
     var up = state.deps.filter(function (d) { return d.r > now - 30000; });
     renderTafel(up, now);
     renderModern(up, now);
+    renderHell(up, now);
 
     /* Zeile oben links: Uhrzeit (Tafel) oder Live-Anzeige (Modern) */
     var tl = $('top-l'), stale = !state.at || state.err || (now - state.at) > 90000;
-    if (mode === 'tafel') { tl.textContent = tf.format(new Date(now)); tl.removeAttribute('data-s'); }
+    if (mode !== 'modern') { tl.textContent = tf.format(new Date(now)); tl.removeAttribute('data-s'); }
     else { tl.textContent = stale ? 'VERALTET' : 'LIVE'; tl.setAttribute('data-s', stale ? 'old' : 'ok'); }
 
     var err = $('err'), bar = $('bar');
@@ -304,15 +402,16 @@ html[data-mode="modern"] .bar button { border: 1px solid var(--m-accent); border
 
   /* ---- Umschalter ---- */
   function setMode(next, persist) {
-    mode = next === 'modern' ? 'modern' : 'tafel';
+    mode = (next === 'tafel' || next === 'modern') ? next : 'hell';
     document.documentElement.setAttribute('data-mode', mode);
     $('v-tafel').hidden = mode !== 'tafel';
     $('v-modern').hidden = mode !== 'modern';
+    $('v-hell').hidden = mode !== 'hell';
     Array.prototype.forEach.call(document.querySelectorAll('.seg button'), function (b) {
       b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === mode));
     });
     var tc = document.querySelector('meta[name="theme-color"]');
-    if (tc) tc.setAttribute('content', mode === 'modern' ? '#08141D' : '#0A0805');
+    if (tc) tc.setAttribute('content', mode === 'modern' ? '#08141D' : (mode === 'hell' ? '#F4F1EC' : '#0A0805'));
     if (persist) { try { localStorage.setItem(KEY, mode); } catch (e) {} }
     render();
   }
