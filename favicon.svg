@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0A0805"/>
+  <!-- Bus von vorne in Tafel-Gelb -->
+  <rect x="14" y="10" width="36" height="40" rx="7" fill="#FFB000"/>
+  <rect x="19" y="15" width="26" height="14" rx="3" fill="#0A0805"/>
+  <rect x="19" y="33" width="26" height="3" rx="1.5" fill="#B87A00"/>
+  <circle cx="21" cy="42" r="3" fill="#0A0805"/>
+  <circle cx="43" cy="42" r="3" fill="#0A0805"/>
+  <rect x="17" y="50" width="8" height="5" rx="1.5" fill="#FFB000"/>
+  <rect x="39" y="50" width="8" height="5" rx="1.5" fill="#FFB000"/>
+</svg>
