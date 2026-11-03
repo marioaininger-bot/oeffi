@@ -1,8 +1,10 @@
-// Cloudflare Worker: reicht die Abfahrten der Wiener Linien für die Haltestelle Hoechlegasse (RBL 8680)
-// an die Seite auf GitHub Pages weiter und setzt dabei die Freigabe (CORS), die die Wiener Linien selbst nicht senden.
-// Die Haltestelle ist fest eingetragen, der Worker lässt sich also nicht als offener Weiterleiter für andere Abfragen nutzen.
+// Cloudflare Worker: reicht die Abfahrten der Wiener Linien für drei feste Steige weiter:
+// Hoechlegasse (RBL 8680, 98A), Lohwaggasse (RBL 1049, 26A Richtung Kagran U) und Aspernstraße (RBL 4251, U2 Richtung Karlsplatz).
+// Die Antwort enthält alle drei Monitore und geht an die Seite auf GitHub Pages. Der Worker setzt dabei die Freigabe (CORS), die die Wiener Linien selbst nicht senden.
+// Die Steige sind fest eingetragen, der Worker lässt sich also nicht als offener Weiterleiter für andere Abfragen nutzen.
 
-const UPSTREAM = 'https://www.wienerlinien.at/ogd_realtime/monitor?rbl=8680';
+const RBLS = [8680, 1049, 4251];
+const UPSTREAM = 'https://www.wienerlinien.at/ogd_realtime/monitor?' + RBLS.map((r) => 'rbl=' + r).join('&');
 const ALLOWED_ORIGINS = ['https://marioaininger-bot.github.io', 'https://abfahrt.aininger.com'];
 
 export default {

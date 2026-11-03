@@ -73,8 +73,8 @@ html[data-mode="modern"] .top-l[data-s="old"] { color: var(--m-warn); }
 .t-line { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; align-items: baseline; font-size: 26px; padding: 8px 0; border-bottom: 1px dotted var(--t-rule2); }
 .t-line .n { font-size: 20px; color: var(--t-dim); }
 .t-line .d { font-size: 16px; color: var(--t-dim); }
-.t-line.first { font-size: clamp(46px, 15vw, 64px); padding: 14px 0 16px; border-bottom: 2px dotted var(--t-rule); }
-.t-line.first .n { font-size: 30px; }
+.t-line.first { font-size: clamp(38px, 12vw, 52px); padding: 14px 0 16px; border-bottom: 2px dotted var(--t-rule); }
+.t-line.first .n { font-size: 26px; }
 .t-line.first .d { font-size: 22px; color: var(--t-amber); }
 .t-line .late { color: var(--t-late); }
 .t-empty { color: var(--t-dim); font-size: 20px; padding: 14px 0; }
@@ -84,11 +84,12 @@ html[data-mode="modern"] .top-l[data-s="old"] { color: var(--m-warn); }
 .badge { background: var(--m-red); color: #fff; font: 700 28px/1 var(--f-num); padding: 8px 12px; border-radius: 6px; letter-spacing: .03em; }
 .hd-m b { display: block; font-weight: 700; font-size: 19px; line-height: 1.15; }
 .hd-m span { font-size: 14px; color: var(--m-muted); }
-.ringbox { position: relative; width: min(220px, 62vw); aspect-ratio: 1; margin: 6px auto 0; }
+.ringbox { position: relative; width: min(160px, 46vw); aspect-ratio: 1; margin: 6px auto 0; }
 .ringbox svg { width: 100%; height: 100%; display: block; }
 .ringbox circle.fill { transition: stroke-dashoffset .6s ease; }
 .mid { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.mid b { font: 700 clamp(64px, 22vw, 92px)/1 var(--f-num); }
+.mid b { font: 700 clamp(48px, 16vw, 68px)/1 var(--f-num); }
+.mid b.now { font-size: clamp(34px, 11vw, 46px); }
 .mid span { font: 500 12px var(--f-mono); color: var(--m-muted); letter-spacing: .14em; }
 .at { text-align: center; font-size: 16px; color: #B9D3E0; }
 .at em { font-style: normal; font-weight: 700; color: var(--m-ok); }
@@ -138,8 +139,8 @@ html[data-mode="hell"] .seg button[aria-pressed="true"] { background: #E2001A; c
 .h-band span.s { font-size: 13px; opacity: .9; }
 .h-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
 .h-first { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: end; padding-bottom: 12px; border-bottom: 3px solid #16181B; }
-.h-first .num { font: 700 clamp(88px, 30vw, 128px)/.82 var(--f-num); }
-.h-first .num.now { font-size: clamp(54px, 18vw, 76px); line-height: .9; }
+.h-first .num { font: 700 clamp(64px, 22vw, 92px)/.82 var(--f-num); }
+.h-first .num.now { font-size: clamp(40px, 13vw, 56px); line-height: .9; }
 .h-first .u { font: 600 24px/1 var(--f-num); letter-spacing: .06em; text-transform: uppercase; padding-bottom: 6px; }
 .h-first .u small { display: block; font: 500 15px 'Barlow', system-ui, sans-serif; letter-spacing: 0; text-transform: none; color: #5B5F66; margin-top: 4px; }
 .h-ok { color: #0E7A4F; font-weight: 700; }
@@ -166,6 +167,12 @@ html[data-mode="hell"] .bar[data-s="ok"] .dot { background: #0E7A4F; }
 html[data-mode="hell"] .bar[data-s="bad"] .dot { background: #B42318; }
 html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: #16181B; color: #fff; font: 600 14px 'Barlow', system-ui, sans-serif; letter-spacing: .04em; text-transform: none; }
 
+#t-box, #m-box { display: flex; flex-direction: column; gap: 22px; }
+#h-box { display: flex; flex-direction: column; gap: 16px; }
+.m-conn { display: flex; flex-direction: column; gap: 12px; }
+.m-conn + .m-conn { border-top: 1px solid var(--m-track); padding-top: 20px; }
+.m-conn .at { margin-top: -2px; }
+
 @media (prefers-reduced-motion: reduce) { .ringbox circle.fill { transition: none; } }
 </style>
 </head>
@@ -180,49 +187,14 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
     </div>
   </div>
 
-  <!-- Ansicht Tafel -->
-  <section id="v-tafel" aria-label="Abfahrten, Tafel-Ansicht" hidden>
-    <div class="hd-t"><b>98A</b><span>Hoechlegasse<br>&gt; Aspernstraße U</span></div>
-    <div class="t-list tn" id="t-list"><div class="t-empty">Lädt …</div></div>
-  </section>
-
-  <!-- Ansicht Modern -->
-  <section id="v-modern" aria-label="Abfahrten, moderne Ansicht" hidden>
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div class="hd-m"><span class="badge">98A</span><div><b>Hoechlegasse</b><span>Richtung Aspernstraße U</span></div></div>
-      <div class="ringbox">
-        <svg viewBox="0 0 200 200" aria-hidden="true">
-          <circle cx="100" cy="100" r="86" fill="none" stroke="rgba(134,169,187,.22)" stroke-width="10"/>
-          <circle class="fill" id="ring" cx="100" cy="100" r="86" fill="none" stroke="#22D3EE" stroke-width="10" stroke-linecap="round" stroke-dasharray="540.4" stroke-dashoffset="540.4" transform="rotate(-90 100 100)"/>
-        </svg>
-        <div class="mid"><b class="tn" id="m-num">–</b><span id="m-unit">MINUTEN</span></div>
-      </div>
-      <div class="at tn" id="m-at">Lädt …</div>
-      <div id="m-timeline" hidden>
-        <div class="axis tn" id="m-axis"><div class="ln"></div></div>
-        <div class="scale"><span>JETZT</span><span>30 MIN</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Ansicht Hell -->
-  <section id="v-hell" aria-label="Abfahrten, helle Ansicht">
-    <div class="h-wrap">
-      <div class="h-band"><span class="h-bus">98A</span><div><b>Hoechlegasse</b><span class="s">Richtung Aspernstraße U</span></div></div>
-      <div class="h-body">
-        <div class="h-first tn" id="h-first"><div class="h-empty">Lädt …</div></div>
-        <div class="h-rows tn" id="h-rows"></div>
-        <div id="h-timeline" hidden>
-          <div class="h-axis" id="h-axis" aria-hidden="true"><div class="ln"></div></div>
-          <div class="h-scale"><span>JETZT</span><span>30 MIN</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Ansichten: je Verbindung wird ein Block aus den Daten gebaut -->
+  <section id="v-tafel" aria-label="Abfahrten, Tafel-Ansicht" hidden><div id="t-box"></div></section>
+  <section id="v-modern" aria-label="Abfahrten, moderne Ansicht" hidden><div id="m-box"></div></section>
+  <section id="v-hell" aria-label="Abfahrten, helle Ansicht"><div id="h-box"></div></section>
 
   <div class="err" id="err" role="alert" hidden>
     <p id="err-t"></p>
-    <p>Die Rohdaten kannst du hier prüfen: <a href="https://www.wienerlinien.at/ogd_realtime/monitor?rbl=8680" target="_blank" rel="noopener noreferrer">Wiener Linien, Haltestelle 8680</a></p>
+    <p>Die Rohdaten kannst du hier prüfen: <a href="https://www.wienerlinien.at/ogd_realtime/monitor?rbl=8680&amp;rbl=1049&amp;rbl=4251" target="_blank" rel="noopener noreferrer">Wiener Linien, Haltestellen 8680, 1049 und 4251</a></p>
   </div>
 
   <div class="bar" id="bar" data-s="">
@@ -236,11 +208,18 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
   'use strict';
   /* Adresse deines Cloudflare Workers, zum Beispiel https://oeffi.dein-name.workers.dev */
   var URL_API = 'https://oeffi.mario-aininger.workers.dev';
-  var LINE = '98A', TZ = 'Europe/Vienna', EVERY = 30000, KEY = 'oeffi-ansicht';
-  var RING_FULL = 540.4, RING_MIN = 10, AXIS_MIN = 30, SHOW = 5;
+  /* Verbindungen in der Reihenfolge der Anzeige. rbl = Steig-Nummer der Wiener Linien, muss zur Liste im Worker passen. */
+  var CONNS = [
+    { id: '98A', rbl: '8680', line: '98A', name: 'Hoechlegasse', to: 'Aspernstraße U' },
+    { id: '26A', rbl: '1049', line: '26A', name: 'Lohwaggasse', to: 'Kagran U' },
+    { id: 'U2',  rbl: '4251', line: 'U2',  name: 'Aspernstraße', to: 'Karlsplatz' }
+  ];
+  var TZ = 'Europe/Vienna', EVERY = 30000, KEY = 'oeffi-ansicht';
+  var RING_FULL = 540.4, RING_MIN = 10, AXIS_MIN = 30, SHOW = 4;
+  var SVGNS = 'http://www.w3.org/2000/svg';
   var tf = new Intl.DateTimeFormat('de-AT', { hour: '2-digit', minute: '2-digit', timeZone: TZ });
   var tfs = new Intl.DateTimeFormat('de-AT', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: TZ });
-  var state = { deps: [], at: 0, err: null };
+  var state = { deps: {}, at: 0, err: null };
   var busy = false, timer = 0, mode = 'hell';
 
   function $(id) { return document.getElementById(id); }
@@ -249,18 +228,26 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
   function parseTime(s) { return Date.parse(String(s || '').replace(/([+-]\d{2})(\d{2})$/, '$1:$2')); }
   function setText(id, v) { $(id).textContent = v; }
 
+  /* Ergebnis: je Verbindung eine sortierte Liste. null heißt, die Haltestelle fehlt in der Antwort. */
   function collect(json) {
-    var out = [];
-    ((json && json.data && json.data.monitors) || []).forEach(function (m) {
-      (m.lines || []).forEach(function (l) {
-        if (l.name !== LINE) return;
-        ((l.departures && l.departures.departure) || []).forEach(function (d) {
-          var t = d.departureTime || {}, p = parseTime(t.timePlanned), r = parseTime(t.timeReal || t.timePlanned);
-          if (isFinite(r)) out.push({ p: isFinite(p) ? p : r, r: r });
+    var monitors = (json && json.data && json.data.monitors) || [], out = {};
+    CONNS.forEach(function (c) {
+      var found = false, list = [];
+      monitors.forEach(function (m) {
+        var attr = (m.locationStop && m.locationStop.properties && m.locationStop.properties.attributes) || {};
+        if (String(attr.rbl) !== c.rbl) return;
+        found = true;
+        (m.lines || []).forEach(function (l) {
+          if (l.name !== c.line) return;
+          ((l.departures && l.departures.departure) || []).forEach(function (d) {
+            var t = d.departureTime || {}, p = parseTime(t.timePlanned), r = parseTime(t.timeReal || t.timePlanned);
+            if (isFinite(r)) list.push({ p: isFinite(p) ? p : r, r: r });
+          });
         });
       });
+      list.sort(function (a, b) { return a.r - b.r; });
+      out[c.id] = found ? list : null;
     });
-    out.sort(function (a, b) { return a.r - b.r; });
     return out;
   }
 
@@ -286,13 +273,25 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
   function delayMin(d) { return Math.round((d.r - d.p) / 60000); }
   function isLate(d) { return delayMin(d) >= 2; }
   function countdown(d, now) { return Math.max(0, Math.floor((d.r - now) / 60000)); }
+  function upcoming(c, now) {
+    var all = state.deps[c.id];
+    return all ? all.filter(function (d) { return d.r > now - 30000; }) : null;
+  }
+  /* Text, wenn es nichts anzuzeigen gibt */
+  function emptyText(up) {
+    if (!state.at) return state.err ? 'Keine Daten geladen.' : 'Lädt …';
+    if (up === null) return 'Für diese Haltestelle kamen keine Daten.';
+    return 'Keine Abfahrten in den nächsten Minuten gemeldet.';
+  }
 
   /* ---- Ansicht Tafel ---- */
-  function renderTafel(up, now) {
-    var box = $('t-list');
-    box.textContent = '';
-    if (!state.at) { box.appendChild(el('div', 't-empty', state.err ? 'KEINE DATEN GELADEN' : 'LÄDT …')); return; }
-    if (!up.length) { box.appendChild(el('div', 't-empty', 'KEINE ABFAHRTEN GEMELDET')); return; }
+  function blockTafel(c, up, now) {
+    var wrap = el('div', 't-conn');
+    var hd = el('div', 'hd-t'); hd.appendChild(el('b', '', c.id));
+    var sp = el('span'); sp.appendChild(document.createTextNode(c.name.toUpperCase())); sp.appendChild(el('br')); sp.appendChild(document.createTextNode('> ' + c.to.toUpperCase()));
+    hd.appendChild(sp); wrap.appendChild(hd);
+    var box = el('div', 't-list tn'); wrap.appendChild(box);
+    if (!up || !up.length) { box.appendChild(el('div', 't-empty', emptyText(up).toUpperCase())); return wrap; }
     up.slice(0, SHOW).forEach(function (d, i) {
       var m = countdown(d, now), late = isLate(d);
       var row = el('div', 't-line' + (i === 0 ? ' first' : ''));
@@ -301,29 +300,48 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
       row.appendChild(el('span', 'd' + (late ? ' late' : ''), (late ? '+' + delayMin(d) + ' · ' : '') + tf.format(new Date(d.r))));
       box.appendChild(row);
     });
+    return wrap;
   }
 
   /* ---- Ansicht Modern ---- */
-  function renderModern(up, now) {
-    var ring = $('ring'), tl = $('m-timeline'), axis = $('m-axis'), at = $('m-at');
-    while (axis.children.length > 1) axis.removeChild(axis.lastChild);
-    at.textContent = '';
-    if (!state.at || !up.length) {
-      setText('m-num', '–'); setText('m-unit', '');
-      ring.setAttribute('stroke-dashoffset', RING_FULL);
-      tl.hidden = true;
-      at.appendChild(el('span', 'm-empty', !state.at ? (state.err ? 'Keine Daten geladen.' : 'Lädt …') : 'Keine Abfahrten in den nächsten Minuten gemeldet.'));
-      return;
+  function ring(fillOffset) {
+    var svg = document.createElementNS(SVGNS, 'svg'); svg.setAttribute('viewBox', '0 0 200 200'); svg.setAttribute('aria-hidden', 'true');
+    function circ(stroke, extra) {
+      var c = document.createElementNS(SVGNS, 'circle');
+      c.setAttribute('cx', '100'); c.setAttribute('cy', '100'); c.setAttribute('r', '86'); c.setAttribute('fill', 'none');
+      c.setAttribute('stroke', stroke); c.setAttribute('stroke-width', '10');
+      if (extra) { c.setAttribute('stroke-linecap', 'round'); c.setAttribute('stroke-dasharray', String(RING_FULL)); c.setAttribute('stroke-dashoffset', String(fillOffset)); c.setAttribute('transform', 'rotate(-90 100 100)'); }
+      return c;
+    }
+    svg.appendChild(circ('rgba(134,169,187,.22)')); svg.appendChild(circ('#22D3EE', true));
+    return svg;
+  }
+  function blockModern(c, up, now) {
+    var wrap = el('div', 'm-conn');
+    var hd = el('div', 'hd-m'); hd.appendChild(el('span', 'badge', c.id));
+    var who = el('div'); who.appendChild(el('b', '', c.name)); who.appendChild(el('span', '', 'Richtung ' + c.to));
+    hd.appendChild(who); wrap.appendChild(hd);
+    var rb = el('div', 'ringbox'), mid = el('div', 'mid'), num = el('b', 'tn'), unit = el('span');
+    mid.appendChild(num); mid.appendChild(unit);
+    var at = el('div', 'at tn');
+    if (!up || !up.length) {
+      num.textContent = '–';
+      rb.appendChild(ring(RING_FULL)); rb.appendChild(mid); wrap.appendChild(rb);
+      at.appendChild(el('span', 'm-empty', emptyText(up))); wrap.appendChild(at);
+      return wrap;
     }
     var d = up[0], m = countdown(d, now), late = isLate(d);
-    setText('m-num', m < 1 ? 'jetzt' : String(m));
-    setText('m-unit', m < 1 ? '' : (m === 1 ? 'MINUTE' : 'MINUTEN'));
-    ring.setAttribute('stroke-dashoffset', String(RING_FULL * (Math.min(m, RING_MIN) / RING_MIN)));
+    num.textContent = m < 1 ? 'jetzt' : String(m);
+    if (m < 1) num.className = 'tn now';
+    unit.textContent = m < 1 ? '' : (m === 1 ? 'MINUTE' : 'MINUTEN');
+    rb.appendChild(ring(RING_FULL * (Math.min(m, RING_MIN) / RING_MIN))); rb.appendChild(mid); wrap.appendChild(rb);
     at.appendChild(document.createTextNode('Abfahrt ' + tf.format(new Date(d.r)) + ' · '));
     at.appendChild(el('em', late ? 'warn' : '', late ? '+' + delayMin(d) + ' Min (geplant ' + tf.format(new Date(d.p)) + ')' : 'pünktlich'));
+    wrap.appendChild(at);
 
+    var tl = el('div'), axis = el('div', 'axis tn'); axis.appendChild(el('div', 'ln'));
     var lastPct = -100, any = false;
-    up.slice(0, SHOW).forEach(function (x, i) {
+    up.slice(0, SHOW + 1).forEach(function (x, i) {
       var mm = countdown(x, now);
       if (mm > AXIS_MIN) return;
       any = true;
@@ -336,26 +354,30 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
       axis.appendChild(t);
       lastPct = pct;
     });
-    tl.hidden = !any;
+    if (any) {
+      tl.appendChild(axis);
+      var sc = el('div', 'scale'); sc.appendChild(el('span', '', 'JETZT')); sc.appendChild(el('span', '', '30 MIN'));
+      tl.appendChild(sc); wrap.appendChild(tl);
+    }
+    return wrap;
   }
 
   /* ---- Ansicht Hell ---- */
-  function renderHell(up, now) {
-    var first = $('h-first'), rows = $('h-rows'), tl = $('h-timeline'), axis = $('h-axis');
-    first.textContent = ''; rows.textContent = '';
-    while (axis.children.length > 1) axis.removeChild(axis.lastChild);
-    if (!state.at || !up.length) {
-      tl.hidden = true;
-      first.appendChild(el('div', 'h-empty', !state.at ? (state.err ? 'Keine Daten geladen.' : 'Lädt …') : 'Keine Abfahrten in den nächsten Minuten gemeldet.'));
-      return;
-    }
+  function blockHell(c, up, now) {
+    var wrap = el('div', 'h-wrap');
+    var band = el('div', 'h-band'); band.appendChild(el('span', 'h-bus', c.id));
+    var who = el('div'); who.appendChild(el('b', '', c.name)); who.appendChild(el('span', 's', 'Richtung ' + c.to));
+    band.appendChild(who); wrap.appendChild(band);
+    var body = el('div', 'h-body'); wrap.appendChild(body);
+    var first = el('div', 'h-first tn'); body.appendChild(first);
+    if (!up || !up.length) { first.appendChild(el('div', 'h-empty', emptyText(up))); return wrap; }
     var d = up[0], m = countdown(d, now), late = isLate(d);
     first.appendChild(el('div', 'num' + (m < 1 ? ' now' : ''), m < 1 ? 'jetzt' : String(m)));
     var u = el('div', 'u', m < 1 ? '' : (m === 1 ? 'Minute' : 'Minuten'));
     var sm = el('small', '', tf.format(new Date(d.r)) + ' Uhr · ');
     sm.appendChild(el('span', late ? 'h-warn' : 'h-ok', late ? '+' + delayMin(d) + ' Min' : 'pünktlich'));
-    u.appendChild(sm);
-    first.appendChild(u);
+    u.appendChild(sm); first.appendChild(u);
+    var rows = el('div', 'h-rows tn'); body.appendChild(rows);
     up.slice(1, SHOW).forEach(function (x) {
       var mm = countdown(x, now), lt = isLate(x);
       var r = el('div', 'h-r' + (lt ? ' l' : ''));
@@ -366,8 +388,9 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
       r.appendChild(el('span', 'st', lt ? '+' + delayMin(x) + ' Min' : 'pünktlich'));
       rows.appendChild(r);
     });
+    var axis = el('div', 'h-axis'); axis.setAttribute('aria-hidden', 'true'); axis.appendChild(el('div', 'ln'));
     var any = false;
-    up.slice(0, SHOW).forEach(function (x, i) {
+    up.slice(0, SHOW + 1).forEach(function (x, i) {
       var mm = countdown(x, now);
       if (mm > AXIS_MIN) return;
       any = true;
@@ -375,17 +398,22 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
       dot.style.left = Math.max(4, Math.min(96, mm / AXIS_MIN * 100)) + '%';
       axis.appendChild(dot);
     });
-    tl.hidden = !any;
+    if (any) {
+      var tl = el('div'); tl.appendChild(axis);
+      var sc = el('div', 'h-scale'); sc.appendChild(el('span', '', 'JETZT')); sc.appendChild(el('span', '', '30 MIN'));
+      tl.appendChild(sc); body.appendChild(tl);
+    }
+    return wrap;
   }
 
-  function render() {
-    var now = Date.now();
-    var up = state.deps.filter(function (d) { return d.r > now - 30000; });
-    renderTafel(up, now);
-    renderModern(up, now);
-    renderHell(up, now);
+  var VIEWS = { tafel: ['t-box', blockTafel], modern: ['m-box', blockModern], hell: ['h-box', blockHell] };
 
-    /* Zeile oben links: Uhrzeit (Tafel) oder Live-Anzeige (Modern) */
+  function render() {
+    var now = Date.now(), v = VIEWS[mode], box = $(v[0]);
+    box.textContent = '';
+    CONNS.forEach(function (c) { box.appendChild(v[1](c, upcoming(c, now), now)); });
+
+    /* Zeile oben links: Uhrzeit (Tafel, Hell) oder Live-Anzeige (Modern) */
     var tl = $('top-l'), stale = !state.at || state.err || (now - state.at) > 90000;
     if (mode !== 'modern') { tl.textContent = tf.format(new Date(now)); tl.removeAttribute('data-s'); }
     else { tl.textContent = stale ? 'VERALTET' : 'LIVE'; tl.setAttribute('data-s', stale ? 'old' : 'ok'); }
