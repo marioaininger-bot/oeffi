@@ -212,7 +212,7 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
   var CONNS = [
     { id: '98A', rbl: '8680', line: '98A', name: 'Hoechlegasse', to: 'Aspernstraße U' },
     { id: '26A', rbl: '1049', line: '26A', name: 'Lohwaggasse', to: 'Kagran U' },
-    { id: 'U2',  rbl: '4251', line: 'U2',  name: 'Aspernstraße', to: 'Karlsplatz' }
+    { id: 'U2',  rbl: '4251', line: 'U2',  name: 'Aspernstraße', to: 'Karlsplatz', color: '#9A4C97', tafel: '#D79BD4' }
   ];
   var TZ = 'Europe/Vienna', EVERY = 30000, KEY = 'oeffi-ansicht';
   var RING_FULL = 540.4, RING_MIN = 10, AXIS_MIN = 30, SHOW = 4;
@@ -287,7 +287,7 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
   /* ---- Ansicht Tafel ---- */
   function blockTafel(c, up, now) {
     var wrap = el('div', 't-conn');
-    var hd = el('div', 'hd-t'); hd.appendChild(el('b', '', c.id));
+    var hd = el('div', 'hd-t'); var tb = el('b', '', c.id); if (c.tafel) tb.style.color = c.tafel; hd.appendChild(tb);
     var sp = el('span'); sp.appendChild(document.createTextNode(c.name.toUpperCase())); sp.appendChild(el('br')); sp.appendChild(document.createTextNode('> ' + c.to.toUpperCase()));
     hd.appendChild(sp); wrap.appendChild(hd);
     var box = el('div', 't-list tn'); wrap.appendChild(box);
@@ -318,7 +318,7 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
   }
   function blockModern(c, up, now) {
     var wrap = el('div', 'm-conn');
-    var hd = el('div', 'hd-m'); hd.appendChild(el('span', 'badge', c.id));
+    var hd = el('div', 'hd-m'); var bd = el('span', 'badge', c.id); if (c.color) bd.style.background = c.color; hd.appendChild(bd);
     var who = el('div'); who.appendChild(el('b', '', c.name)); who.appendChild(el('span', '', 'Richtung ' + c.to));
     hd.appendChild(who); wrap.appendChild(hd);
     var rb = el('div', 'ringbox'), mid = el('div', 'mid'), num = el('b', 'tn'), unit = el('span');
@@ -365,7 +365,8 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
   /* ---- Ansicht Hell ---- */
   function blockHell(c, up, now) {
     var wrap = el('div', 'h-wrap');
-    var band = el('div', 'h-band'); band.appendChild(el('span', 'h-bus', c.id));
+    var band = el('div', 'h-band'); if (c.color) band.style.background = c.color;
+    var bus = el('span', 'h-bus', c.id); if (c.color) bus.style.color = c.color; band.appendChild(bus);
     var who = el('div'); who.appendChild(el('b', '', c.name)); who.appendChild(el('span', 's', 'Richtung ' + c.to));
     band.appendChild(who); wrap.appendChild(band);
     var body = el('div', 'h-body'); wrap.appendChild(body);
@@ -395,6 +396,7 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
       if (mm > AXIS_MIN) return;
       any = true;
       var dot = el('i', (i === 0 ? 'f' : '') + (isLate(x) ? ' l' : ''));
+      if (c.color && !isLate(x)) dot.style.background = c.color;
       dot.style.left = Math.max(4, Math.min(96, mm / AXIS_MIN * 100)) + '%';
       axis.appendChild(dot);
     });
