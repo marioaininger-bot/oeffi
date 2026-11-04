@@ -167,6 +167,10 @@ html[data-mode="hell"] .bar[data-s="ok"] .dot { background: #0E7A4F; }
 html[data-mode="hell"] .bar[data-s="bad"] .dot { background: #B42318; }
 html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: #16181B; color: #fff; font: 600 14px 'Barlow', system-ui, sans-serif; letter-spacing: .04em; text-transform: none; }
 
+.ft { display: inline-flex; gap: .35em; margin-left: .5em; font-size: .6em; letter-spacing: 0; vertical-align: middle; font-family: system-ui, 'Segoe UI Symbol', sans-serif; font-weight: 400; }
+html[data-mode="modern"] .ft { font-size: 1em; margin-left: 0; }
+html[data-mode="hell"] .h-first .u small .ft { font-size: 1em; margin-left: 0; }
+html[data-mode="hell"] .h-r .t .ft { font-size: .9em; margin-left: 2px; }
 #t-box, #m-box { display: flex; flex-direction: column; gap: 22px; }
 #h-box { display: flex; flex-direction: column; gap: 16px; }
 .m-conn { display: flex; flex-direction: column; gap: 12px; }
@@ -241,7 +245,8 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
           if (l.name !== c.line) return;
           ((l.departures && l.departures.departure) || []).forEach(function (d) {
             var t = d.departureTime || {}, p = parseTime(t.timePlanned), r = parseTime(t.timeReal || t.timePlanned);
-            if (isFinite(r)) list.push({ p: isFinite(p) ? p : r, r: r });
+            var v = d.vehicle || {};
+            if (isFinite(r)) list.push({ p: isFinite(p) ? p : r, r: r, cool: v.cooling === true, bf: v.barrierFree === true });
           });
         });
       });
@@ -277,6 +282,14 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
     var all = state.deps[c.id];
     return all ? all.filter(function (d) { return d.r > now - 30000; }) : null;
   }
+  /* Ausstattung des Fahrzeugs: nur anzeigen, was die Wiener Linien ausdrücklich melden (fehlende Angabe = nichts anzeigen) */
+  function feat(d) {
+    if (!d.cool && !d.bf) return null;
+    var w = el('span', 'ft');
+    if (d.cool) { var a = el('span', '', '\u2744\uFE0E'); a.title = 'Klimaanlage'; a.setAttribute('role', 'img'); a.setAttribute('aria-label', 'Klimaanlage'); w.appendChild(a); }
+    if (d.bf) { var b = el('span', '', '\u267F\uFE0E'); b.title = 'Barrierefrei'; b.setAttribute('role', 'img'); b.setAttribute('aria-label', 'Barrierefrei'); w.appendChild(b); }
+    return w;
+  }
   /* Text, wenn es nichts anzuzeigen gibt */
   function emptyText(up) {
     if (!state.at) return state.err ? 'Keine Daten geladen.' : 'Lädt …';
@@ -296,7 +309,8 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
       var m = countdown(d, now), late = isLate(d);
       var row = el('div', 't-line' + (i === 0 ? ' first' : ''));
       row.appendChild(el('span', 'n', '>'));
-      row.appendChild(el('span', '', m < 1 ? 'JETZT' : m + ' MIN'));
+      var mn = el('span', '', m < 1 ? 'JETZT' : m + ' MIN'); var ft = feat(d); if (ft) mn.appendChild(ft);
+      row.appendChild(mn);
       row.appendChild(el('span', 'd' + (late ? ' late' : ''), (late ? '+' + delayMin(d) + ' · ' : '') + tf.format(new Date(d.r))));
       box.appendChild(row);
     });
@@ -337,6 +351,7 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
     rb.appendChild(ring(RING_FULL * (Math.min(m, RING_MIN) / RING_MIN))); rb.appendChild(mid); wrap.appendChild(rb);
     at.appendChild(document.createTextNode('Abfahrt ' + tf.format(new Date(d.r)) + ' · '));
     at.appendChild(el('em', late ? 'warn' : '', late ? '+' + delayMin(d) + ' Min (geplant ' + tf.format(new Date(d.p)) + ')' : 'pünktlich'));
+    var fm = feat(d); if (fm) { at.appendChild(document.createTextNode(' · ')); at.appendChild(fm); }
     wrap.appendChild(at);
 
     var tl = el('div'), axis = el('div', 'axis tn'); axis.appendChild(el('div', 'ln'));
@@ -377,6 +392,7 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
     var u = el('div', 'u', m < 1 ? '' : (m === 1 ? 'Minute' : 'Minuten'));
     var sm = el('small', '', tf.format(new Date(d.r)) + ' Uhr · ');
     sm.appendChild(el('span', late ? 'h-warn' : 'h-ok', late ? '+' + delayMin(d) + ' Min' : 'pünktlich'));
+    var fh = feat(d); if (fh) { sm.appendChild(document.createTextNode(' · ')); sm.appendChild(fh); }
     u.appendChild(sm); first.appendChild(u);
     var rows = el('div', 'h-rows tn'); body.appendChild(rows);
     up.slice(1, SHOW).forEach(function (x) {
@@ -385,7 +401,8 @@ html[data-mode="hell"] .bar button { border: 0; border-radius: 6px; background: 
       var b = el('b', '', mm < 1 ? 'jetzt' : String(mm));
       if (mm >= 1) b.appendChild(el('small', '', 'MIN'));
       r.appendChild(b);
-      r.appendChild(el('span', 't', tf.format(new Date(x.r)) + ' Uhr'));
+      var tt = el('span', 't', tf.format(new Date(x.r)) + ' Uhr'); var fr = feat(x); if (fr) { tt.appendChild(document.createTextNode(' ')); tt.appendChild(fr); }
+      r.appendChild(tt);
       r.appendChild(el('span', 'st', lt ? '+' + delayMin(x) + ' Min' : 'pünktlich'));
       rows.appendChild(r);
     });
