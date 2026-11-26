@@ -1,10 +1,10 @@
 # oeffi – Abfahrten der Wiener Linien
 
-Schlanke Webseite mit den nächsten Abfahrten für drei feste Verbindungen:
+Schlanke Webseite mit den nächsten Abfahrten für drei feste Haltestellen, jeweils mit Umschalter auf die Gegenrichtung (sofern eingetragen):
 
-- 98A, Hoechlegasse, Richtung Aspernstraße U (RBL 8680)
-- 26A, Lohwaggasse, Richtung Kagran U (RBL 1049)
-- U2, Aspernstraße, Richtung Karlsplatz (RBL 4251)
+- 98A, Hoechlegasse, Richtung Aspernstraße U (RBL 8680), Gegenrichtung Eßling, Schippanisiedlung (RBL 8654)
+- 26A, Lohwaggasse, Richtung Kagran U (RBL 1049), Gegenrichtung noch nicht eingetragen
+- U2, Aspernstraße, Richtung Karlsplatz (RBL 4251), Gegenrichtung Seestadt (RBL 4272)
 
 Live: <https://abfahrt.aininger.com>
 
@@ -17,19 +17,19 @@ Live: <https://abfahrt.aininger.com>
 | Worker-URL | `https://oeffi.mario-aininger.workers.dev` |
 | Externe Quelle | Wiener Linien OGD Realtime (`www.wienerlinien.at/ogd_realtime/monitor`) |
 | Secrets | keine (der Worker hat bei Cloudflare keine Secrets oder Bindings) |
-| Speicher | nur Browser (`localStorage`, Schlüssel `oeffi-ansicht` = gewählte Ansicht) |
+| Speicher | nur Browser (`localStorage`, Schlüssel `oeffi-ansicht` = gewählte Ansicht, `oeffi-richtung` = gewählte Richtung je Haltestelle) |
 
 ## Datenfluss
 
 ```mermaid
 flowchart LR
   B[Browser<br/>index.html] -- "GET alle 30 s" --> W[Worker oeffi]
-  W -- "monitor?rbl=8680&rbl=1049&rbl=4251" --> WL[Wiener Linien OGD]
+  W -- "monitor?rbl=8680&rbl=8654&rbl=1049&rbl=4251&rbl=4272" --> WL[Wiener Linien OGD]
   WL --> W -- "+ CORS, 15 s Cache" --> B
 ```
 
 - Der Browser fragt den Worker alle 30 Sekunden (nur bei sichtbarem Tab). Die Restzeit rechnet die Seite jede Sekunde selbst nach.
-- Der Worker reicht nur die drei fest eingetragenen Steige weiter. Er ist also kein offener Weiterleiter für andere Abfragen.
+- Der Worker reicht nur die fest eingetragenen Steige weiter. Er ist also kein offener Weiterleiter für andere Abfragen.
 - Der Worker setzt die CORS-Freigabe, die die Wiener Linien selbst nicht senden, und cacht 15 Sekunden.
 - `ALLOWED_ORIGINS` im Worker: `https://marioaininger-bot.github.io` und `https://abfahrt.aininger.com`.
 
@@ -37,12 +37,14 @@ flowchart LR
 
 Drei Darstellungen, umschaltbar und im Browser gemerkt: `hell` (Standard), `tafel` (Anzeigetafel-Stil) und `modern`.
 
+Jede Haltestelle mit Gegenrichtung zeigt oben einen Umschalter ("→ Ziel"). Die Wahl gilt für alle Ansichten und wird im Browser gemerkt (`localStorage`, Schlüssel `oeffi-richtung`).
+
 ## Verbindung ändern oder ergänzen
 
 Die RBL-Nummern stehen an **zwei Stellen** und müssen übereinstimmen:
 
 1. `worker.js` → `RBLS`
-2. `index.html` → `CONNS` (mit Linie, Haltestelle, Richtung und Farben)
+2. `index.html` → `CONNS` (mit Linie, Haltestelle, Richtung und Farben). Die Gegenrichtung steht je Eintrag bei `back: { rbl, to }`, ihre RBL muss ebenfalls in `RBLS` stehen.
 
 Danach den Worker neu deployen.
 
