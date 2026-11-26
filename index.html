@@ -173,6 +173,9 @@ html[data-mode="hell"] .h-first .u small .ft { font-size: 1em; margin-left: 0; }
 html[data-mode="hell"] .h-r .t .ft { font-size: .9em; margin-left: 2px; }
 #t-box, #m-box { display: flex; flex-direction: column; gap: 22px; }
 #h-box { display: flex; flex-direction: column; gap: 16px; }
+.dir { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 8px; }
+.dir button { font: 600 13px system-ui, sans-serif; color: inherit; background: transparent; border: 1px solid currentColor; border-radius: 999px; padding: 4px 10px; opacity: .55; cursor: pointer; }
+.dir button[aria-pressed="true"] { opacity: 1; background: rgba(128,128,128,.25); }
 .m-conn { display: flex; flex-direction: column; gap: 12px; }
 .m-conn + .m-conn { border-top: 1px solid var(--m-track); padding-top: 20px; }
 .m-conn .at { margin-top: -2px; }
@@ -198,7 +201,7 @@ html[data-mode="hell"] .h-r .t .ft { font-size: .9em; margin-left: 2px; }
 
   <div class="err" id="err" role="alert" hidden>
     <p id="err-t"></p>
-    <p>Die Rohdaten kannst du hier prüfen: <a href="https://www.wienerlinien.at/ogd_realtime/monitor?rbl=8680&amp;rbl=1049&amp;rbl=4251" target="_blank" rel="noopener noreferrer">Wiener Linien, Haltestellen 8680, 1049 und 4251</a></p>
+    <p>Die Rohdaten kannst du hier prüfen: <a href="https://www.wienerlinien.at/ogd_realtime/monitor?rbl=8680&amp;rbl=8654&amp;rbl=1049&amp;rbl=1027&amp;rbl=4251&amp;rbl=4272" target="_blank" rel="noopener noreferrer">Wiener Linien, Steige 8680, 8654, 1049, 1027, 4251 und 4272</a></p>
   </div>
 
   <div class="bar" id="bar" data-s="">
@@ -214,11 +217,18 @@ html[data-mode="hell"] .h-r .t .ft { font-size: .9em; margin-left: 2px; }
   var URL_API = 'https://oeffi.mario-aininger.workers.dev';
   /* Verbindungen in der Reihenfolge der Anzeige. rbl = Steig-Nummer der Wiener Linien, muss zur Liste im Worker passen. */
   var CONNS = [
-    { id: '98A', rbl: '8680', line: '98A', name: 'Hoechlegasse', to: 'Aspernstraße U', tafel: '#E2001A' },
-    { id: '26A', rbl: '1049', line: '26A', name: 'Lohwaggasse', to: 'Kagran U', tafel: '#E2001A' },
-    { id: 'U2',  rbl: '4251', line: 'U2',  name: 'Aspernstraße', to: 'Karlsplatz', color: '#9A4C97', tafel: '#D79BD4' }
+    { id: '98A', rbl: '8680', line: '98A', name: 'Hoechlegasse', to: 'Aspernstraße U', tafel: '#E2001A', back: { rbl: '8654', to: 'Eßling, Schippanisiedlung' } },
+    { id: '26A', rbl: '1049', line: '26A', name: 'Lohwaggasse', to: 'Kagran U', tafel: '#E2001A', back: { rbl: '1027', to: 'Groß-Enzersdorf' } },
+    { id: 'U2',  rbl: '4251', line: 'U2',  name: 'Aspernstraße', to: 'Karlsplatz', color: '#9A4C97', tafel: '#D79BD4', back: { rbl: '4272', to: 'Seestadt' } }
   ];
-  var TZ = 'Europe/Vienna', EVERY = 30000, KEY = 'oeffi-ansicht';
+  /* Je Verbindung mit "back" gibt es eine Gegenrichtung (eigener Steig), umschaltbar. Alle Varianten, auch die Gegenrichtungen, müssen im Worker in RBLS stehen. */
+  var VARIANTS = [];
+  CONNS.forEach(function (c) {
+    c.key = c.id; VARIANTS.push(c);
+    if (c.back) { c.rev = Object.assign({}, c, { rbl: c.back.rbl, to: c.back.to, key: c.id + '-r', back: null }); VARIANTS.push(c.rev); }
+  });
+  var dirs = {};
+  var TZ = 'Europe/Vienna', EVERY = 30000, KEY = 'oeffi-ansicht', KEYDIR = 'oeffi-richtung';
   var RING_FULL = 540.4, RING_MIN = 10, AXIS_MIN = 30, SHOW = 4;
   var SVGNS = 'http://www.w3.org/2000/svg';
   var tf = new Intl.DateTimeFormat('de-AT', { hour: '2-digit', minute: '2-digit', timeZone: TZ });
@@ -235,7 +245,7 @@ html[data-mode="hell"] .h-r .t .ft { font-size: .9em; margin-left: 2px; }
   /* Ergebnis: je Verbindung eine sortierte Liste. null heißt, die Haltestelle fehlt in der Antwort. */
   function collect(json) {
     var monitors = (json && json.data && json.data.monitors) || [], out = {};
-    CONNS.forEach(function (c) {
+    VARIANTS.forEach(function (c) {
       var found = false, list = [];
       monitors.forEach(function (m) {
         var attr = (m.locationStop && m.locationStop.properties && m.locationStop.properties.attributes) || {};
@@ -251,7 +261,7 @@ html[data-mode="hell"] .h-r .t .ft { font-size: .9em; margin-left: 2px; }
         });
       });
       list.sort(function (a, b) { return a.r - b.r; });
-      out[c.id] = found ? list : null;
+      out[c.key] = found ? list : null;
     });
     return out;
   }
@@ -279,7 +289,7 @@ html[data-mode="hell"] .h-r .t .ft { font-size: .9em; margin-left: 2px; }
   function isLate(d) { return delayMin(d) >= 2; }
   function countdown(d, now) { return Math.max(0, Math.floor((d.r - now) / 60000)); }
   function upcoming(c, now) {
-    var all = state.deps[c.id];
+    var all = state.deps[c.key];
     return all ? all.filter(function (d) { return d.r > now - 30000; }) : null;
   }
   /* Ausstattung des Fahrzeugs: nur anzeigen, was die Wiener Linien ausdrücklich melden (fehlende Angabe = nichts anzeigen) */
@@ -425,12 +435,29 @@ html[data-mode="hell"] .h-r .t .ft { font-size: .9em; margin-left: 2px; }
     return wrap;
   }
 
+  /* Umschalter Hin/Zurück je Haltestelle */
+  function dirToggle(c0, cur) {
+    var g = el('div', 'dir'); g.setAttribute('role', 'group'); g.setAttribute('aria-label', 'Richtung ' + c0.name);
+    [c0, c0.rev].forEach(function (x) {
+      var b = el('button', '', '\u2192 ' + x.to); b.type = 'button';
+      b.setAttribute('data-id', c0.id); b.setAttribute('data-rev', x === c0 ? '0' : '1');
+      b.setAttribute('aria-pressed', String(x === cur));
+      g.appendChild(b);
+    });
+    return g;
+  }
+
   var VIEWS = { tafel: ['t-box', blockTafel], modern: ['m-box', blockModern], hell: ['h-box', blockHell] };
 
   function render() {
     var now = Date.now(), v = VIEWS[mode], box = $(v[0]);
     box.textContent = '';
-    CONNS.forEach(function (c) { box.appendChild(v[1](c, upcoming(c, now), now)); });
+    CONNS.forEach(function (c0) {
+      var c = (dirs[c0.id] && c0.rev) ? c0.rev : c0;
+      var blk = v[1](c, upcoming(c, now), now);
+      if (c0.rev) blk.insertBefore(dirToggle(c0, c), blk.firstChild);
+      box.appendChild(blk);
+    });
 
     /* Zeile oben links: Uhrzeit (Tafel, Hell) oder Live-Anzeige (Modern) */
     var tl = $('top-l'), stale = !state.at || state.err || (now - state.at) > 90000;
@@ -467,6 +494,14 @@ html[data-mode="hell"] .h-r .t .ft { font-size: .9em; margin-left: 2px; }
     if (b) setMode(b.getAttribute('data-mode'), true);
   });
 
+  document.querySelector('main').addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.dir button') : null;
+    if (!b) return;
+    dirs[b.getAttribute('data-id')] = b.getAttribute('data-rev') === '1';
+    try { localStorage.setItem(KEYDIR, JSON.stringify(dirs)); } catch (x) {}
+    render();
+  });
+
   function start() {
     clearInterval(timer);
     timer = setInterval(function () { if (!document.hidden) load(); }, EVERY);
@@ -477,6 +512,7 @@ html[data-mode="hell"] .h-r .t .ft { font-size: .9em; margin-left: 2px; }
 
   var saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) {}
+  try { var sd = JSON.parse(localStorage.getItem(KEYDIR) || '{}'); if (sd && typeof sd === 'object') dirs = sd; } catch (e) {}
   setMode(saved, false);
   load(); start();
 })();
