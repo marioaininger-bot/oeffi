@@ -1,9 +1,9 @@
 // Cloudflare Worker: reicht die Abfahrten der Wiener Linien für feste Steige weiter:
-// Hoechlegasse (RBL 8680 Richtung Aspernstraße U, 8654 Richtung Eßling), Lohwaggasse (RBL 1049, 26A Richtung Kagran U) und Aspernstraße (RBL 4251 Richtung Karlsplatz, 4272 Richtung Seestadt).
+// Hoechlegasse (RBL 8680 Richtung Aspernstraße U, 8654 Richtung Eßling), Lohwaggasse (RBL 1049 Richtung Kagran U, 1027 Richtung Groß-Enzersdorf) und Aspernstraße (RBL 4251 Richtung Karlsplatz, 4272 Richtung Seestadt).
 // Die Antwort enthält alle drei Monitore und geht an die Seite auf GitHub Pages. Der Worker setzt dabei die Freigabe (CORS), die die Wiener Linien selbst nicht senden.
 // Die Steige sind fest eingetragen, der Worker lässt sich also nicht als offener Weiterleiter für andere Abfragen nutzen.
 
-const RBLS = [8680, 8654, 1049, 4251, 4272];
+const RBLS = [8680, 8654, 1049, 1027, 4251, 4272];
 const UPSTREAM = 'https://www.wienerlinien.at/ogd_realtime/monitor?' + RBLS.map((r) => 'rbl=' + r).join('&');
 const ALLOWED_ORIGINS = ['https://marioaininger-bot.github.io', 'https://abfahrt.aininger.com'];
 

@@ -3,7 +3,7 @@
 Schlanke Webseite mit den nächsten Abfahrten für drei feste Haltestellen, jeweils mit Umschalter auf die Gegenrichtung (sofern eingetragen):
 
 - 98A, Hoechlegasse, Richtung Aspernstraße U (RBL 8680), Gegenrichtung Eßling, Schippanisiedlung (RBL 8654)
-- 26A, Lohwaggasse, Richtung Kagran U (RBL 1049), Gegenrichtung noch nicht eingetragen
+- 26A, Lohwaggasse, Richtung Kagran U (RBL 1049), Gegenrichtung Groß-Enzersdorf (RBL 1027)
 - U2, Aspernstraße, Richtung Karlsplatz (RBL 4251), Gegenrichtung Seestadt (RBL 4272)
 
 Live: <https://abfahrt.aininger.com>
@@ -24,7 +24,7 @@ Live: <https://abfahrt.aininger.com>
 ```mermaid
 flowchart LR
   B[Browser<br/>index.html] -- "GET alle 30 s" --> W[Worker oeffi]
-  W -- "monitor?rbl=8680&rbl=8654&rbl=1049&rbl=4251&rbl=4272" --> WL[Wiener Linien OGD]
+  W -- "monitor?rbl=8680&rbl=8654&rbl=1049&rbl=1027&rbl=4251&rbl=4272" --> WL[Wiener Linien OGD]
   WL --> W -- "+ CORS, 15 s Cache" --> B
 ```
 
